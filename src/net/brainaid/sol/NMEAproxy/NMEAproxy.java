@@ -1766,7 +1766,7 @@ public class NMEAproxy extends javax.swing.JFrame {
             double a_f1 = 0;
             int week;
 
-            location = String.format("https://%s/?pageName=currentAlmanac&format=yuma",
+            location = String.format("https://%s/sites/default/files/gps/almanac/current_yuma.alm",
                                      "www.navcen.uscg.gov");
 
             System.out.printf("getAlmanac: %s\n", location);
