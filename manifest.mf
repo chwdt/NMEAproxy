@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Permissions: all-permissions
+Codebase: https://sol.brainaid.de/sailonline/toolbox/
+Application-Name: NMEAproxy
+X-COMMENT: Main-Class will be added automatically by build
+
