@@ -27,10 +27,7 @@ import javax.swing.event.ListDataListener;
  *
  * @author John O'Conner
  */
-public class SortedListModel extends AbstractListModel {
-    
-    private SortedListModel() {}
-    
+public class SortedListModel extends AbstractListModel {   
     /**
      * Create a SortedListModel from an existing model
      * using a default text comparator for the default Locale. Sort
@@ -65,16 +62,19 @@ public class SortedListModel extends AbstractListModel {
     public SortedListModel(ListModel model, SortOrder sortOrder, Comparator comp) {
         unsortedModel = model;
         unsortedModel.addListDataListener(new ListDataListener() {
+            @Override
             public void intervalAdded(ListDataEvent e) {
                 unsortedIntervalAdded(e);
             }
 
+            @Override
             public void intervalRemoved(ListDataEvent e) {
                 unsortedIntervalRemoved(e);
             }
 
+            @Override
             public void contentsChanged(ListDataEvent e) {
-                unsortedContentsChanged(e);
+                unsortedContentsChanged();
             }
             
         });
@@ -83,7 +83,7 @@ public class SortedListModel extends AbstractListModel {
         
         // get base model info
         int size = model.getSize();
-        sortedModel = new ArrayList<SortedListEntry>(size);
+        sortedModel = new ArrayList<>(size);
         for (int x = 0; x < size; ++x) {
             SortedListEntry entry = new SortedListEntry(x);
             int insertionPoint = findInsertionPoint(entry);
@@ -96,6 +96,7 @@ public class SortedListModel extends AbstractListModel {
      * @param index index of an entry in the sorted model
      * @return element in the original model to which our entry points
      */
+    @Override
     public Object getElementAt(int index) throws IndexOutOfBoundsException {
         int modelIndex = toUnsortedModelIndex(index);
         Object element = unsortedModel.getElementAt(modelIndex);
@@ -106,6 +107,7 @@ public class SortedListModel extends AbstractListModel {
      * Retrieve the size of the underlying model
      * @return size of the model
      */
+    @Override
     public int getSize() {
         int size = sortedModel.size();
         return size;
@@ -120,10 +122,8 @@ public class SortedListModel extends AbstractListModel {
      *
      */
     public int toUnsortedModelIndex(int index) throws IndexOutOfBoundsException {
-        int modelIndex = -1;
         SortedListEntry entry = sortedModel.get(index);
-        modelIndex = entry.getIndex();
-        return modelIndex;        
+        return entry.getIndex();    
     }
     
     /**
@@ -189,6 +189,7 @@ public class SortedListModel extends AbstractListModel {
         }
     }
     
+    @SuppressWarnings("unchecked")
     public void setComparator(Comparator comp) {
         if (comp == null) {
             sortOrder = SortOrder.UNORDERED;
@@ -205,6 +206,7 @@ public class SortedListModel extends AbstractListModel {
      * Change the sort order of the model at runtime
      * @param sortOrder
      */
+    @SuppressWarnings("unchecked")
     public void setSortOrder(SortOrder sortOrder) {
         if (this.sortOrder != sortOrder) {
             this.sortOrder = sortOrder;
@@ -292,7 +294,8 @@ public class SortedListModel extends AbstractListModel {
      * unsorted model. Let any listeners know about changes. Since I don't
      * track specific changes, sort everywhere and redisplay all items.
      */
-    private void unsortedContentsChanged(ListDataEvent e) {
+    @SuppressWarnings("unchecked")
+    private void unsortedContentsChanged() {
         Collections.sort(sortedModel);
         fireContentsChanged(ListDataEvent.CONTENTS_CHANGED, 0, sortedModel.size()-1);
     }
@@ -301,6 +304,7 @@ public class SortedListModel extends AbstractListModel {
      * Internal helper method to find the insertion point for a new 
      * entry in the sorted model.
      */
+    @SuppressWarnings("unchecked")
     private int findInsertionPoint(SortedListEntry entry) {
         int insertionPoint = sortedModel.size();
         if (sortOrder != SortOrder.UNORDERED)  {
@@ -323,10 +327,7 @@ public class SortedListModel extends AbstractListModel {
         DESCENDING;
     }
     
-    class SortedListEntry implements Comparable {
-        private SortedListEntry() {            
-        }
-        
+    class SortedListEntry implements Comparable {        
         public SortedListEntry(int index) {
             this.index = index;
         }
@@ -339,6 +340,8 @@ public class SortedListModel extends AbstractListModel {
             this.index = index;
         }
         
+        @SuppressWarnings("unchecked")
+        @Override
         public int compareTo(Object o) {
             // retrieve the element that this entry points to
             // in the original model
