@@ -73,7 +73,7 @@ public class NMEAproxy extends javax.swing.JFrame {
     }
     
     public String getVersion() {
-        String dt = "$Date: 2025/01/03 09:08:45 $";
+        String dt = "$Date: 2025/01/10 09:34:45 $";
         
         return dt.substring(dt.indexOf(':') + 2, dt.lastIndexOf('$') - 1);
     }
